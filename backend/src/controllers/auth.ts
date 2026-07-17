@@ -92,16 +92,17 @@ export async function register(req: Request, res: Response) {
     const refreshToken = signToken({ userId: user._id, role: user.role }, String(config.jwtRefreshSecret), String(config.jwtRefreshExpiresIn));
     setAuthCookies(res, token, refreshToken);
 
-    res.status(201).json({ 
-      status: 'success', 
-      data: { 
-        user: { 
-          id: user._id, 
-          name: user.name, 
-          email: user.email, 
-          role: user.role 
-        } 
-      } 
+    res.status(201).json({
+      status: 'success',
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      }
     });
   } catch (error) {
     console.error('Registration error:', error);
@@ -146,16 +147,17 @@ export async function login(req: Request, res: Response) {
 
     setAuthCookies(res, token, refreshToken);
 
-    res.json({ 
-      status: 'success', 
-      data: { 
-        user: { 
-          id: user._id, 
-          name: user.name, 
-          email: user.email, 
-          role: user.role 
-        } 
-      } 
+    res.json({
+      status: 'success',
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      }
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -175,7 +177,7 @@ export function refreshToken(req: Request, res: Response) {
     const decoded = jwt.verify(refresh, String(config.jwtRefreshSecret)) as { userId: string; role: string };
     const token = signToken({ userId: decoded.userId, role: decoded.role }, String(config.jwtSecret), String(config.jwtExpiresIn));
     res.cookie('token', token, getCookieOptions(1000 * 60 * 15));
-    res.json({ status: 'success', message: 'Token refreshed' });
+    res.json({ status: 'success', message: 'Token refreshed', data: { token } });
   } catch (error) {
     clearAuthCookies(res);
     res.status(401).json({ status: 'error', message: 'Invalid refresh token' });

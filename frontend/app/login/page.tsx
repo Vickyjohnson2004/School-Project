@@ -31,6 +31,9 @@ export default function LoginPage() {
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (result) => {
+      if (result.data?.token) {
+        localStorage.setItem('token', result.data.token);
+      }
       if (result.data?.user) {
         localStorage.setItem('user', JSON.stringify(result.data.user));
       }

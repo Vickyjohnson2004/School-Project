@@ -11,7 +11,13 @@ async function refreshAccessToken() {
 
   isRefreshing = true;
   refreshPromise = axiosInstance.get('/auth/refresh')
-    .then(() => true)
+    .then((response) => {
+      const token = response.data?.data?.token;
+      if (token && typeof window !== 'undefined') {
+        localStorage.setItem('token', token);
+      }
+      return true;
+    })
     .catch(() => false)
     .finally(() => {
       isRefreshing = false;
@@ -88,6 +94,7 @@ export async function logoutUser() {
   } finally {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
     }
   }
 }
