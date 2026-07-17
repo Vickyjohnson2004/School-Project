@@ -1,0 +1,10 @@
+fastapi==0.109.0
+uvicorn==0.23.2
+pandas==2.2.3
+numpy==1.27.8
+scikit-learn==1.3.3
+xgboost==1.8.2
+joblib==1.3.2
+matplotlib==3.9.3
+shap==1.5.2
+pydantic==2.9.0
