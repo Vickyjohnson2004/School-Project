@@ -12,6 +12,10 @@ export default {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '15m',
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+  allowedOrigins: (process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:3000')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean),
   mlServiceUrl: process.env.ML_SERVICE_URL || 'http://127.0.0.1:8001',
   emailHost: process.env.EMAIL_HOST || '',
   emailPort: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,

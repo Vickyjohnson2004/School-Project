@@ -25,7 +25,16 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: config.frontendUrl, credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || config.allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 120 });
 app.use(limiter);
@@ -83,9 +92,7 @@ app.use(errorHandler);
 export { app };
 export default app;
 
-// When running as a normal long-lived server (local dev, Render, Railway, Docker)
-// start listening. On Vercel the app is imported by api/index.ts instead, and
-// this block is skipped because VERCEL is set in that environment.
+
 if (!process.env.VERCEL) {
   const startServer = async () => {
     try {
