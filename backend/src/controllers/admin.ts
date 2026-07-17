@@ -87,6 +87,16 @@ export async function getAllUsers(req: AuthRequest, res: Response) {
       studentProfiles.map((s) => [String(s.userId), s])
     );
 
+    const lecturerUserIds = users.filter((u) => u.role === 'lecturer').map((u) => u._id);
+    const lecturerProfiles = lecturerUserIds.length
+      ? await Lecturer.find({ userId: { $in: lecturerUserIds } }).select(
+          'userId lecturerId department specialization officeLocation officeHours'
+        )
+      : [];
+    const lecturerByUserId = new Map(
+      lecturerProfiles.map((l) => [String(l.userId), l])
+    );
+
     const enrichedUsers = users.map((u) => {
       const obj = u.toObject();
       if (u.role === 'student') {
@@ -95,6 +105,13 @@ export async function getAllUsers(req: AuthRequest, res: Response) {
         obj.reachedOut = profile?.reachedOut || false;
         obj.studentId = profile?.studentId || null;
         obj.department = profile?.department || null;
+      } else if (u.role === 'lecturer') {
+        const profile = lecturerByUserId.get(String(u._id));
+        obj.lecturerId = profile?.lecturerId || null;
+        obj.department = profile?.department || null;
+        obj.specialization = profile?.specialization || null;
+        obj.officeLocation = profile?.officeLocation || null;
+        obj.officeHours = profile?.officeHours || null;
       }
       return obj;
     });
@@ -330,6 +347,74 @@ export async function updateStudentLevel(req: AuthRequest, res: Response) {
   } catch (error) {
     console.error('Error updating student level:', error);
     res.status(500).json({ status: 'error', message: 'Failed to update student level' });
+  }
+}
+
+export async function updateUser(req: AuthRequest, res: Response) {
+  try {
+    const admin = await Admin.findOne({ userId: req.user._id });
+
+    if (!admin?.canEditSystem && !admin?.canManageLecturers && !admin?.canManageStudents) {
+      return res.status(403).json({ status: 'error', message: 'Permission denied' });
+    }
+
+    const { userId } = req.params;
+    const { name, email, department, specialization, officeLocation, officeHours, level, studentId, lecturerId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ status: 'error', message: 'User not found' });
+    }
+
+    if (email && email !== user.email) {
+      const existing = await User.findOne({ email });
+      if (existing) {
+        return res.status(409).json({ status: 'error', message: 'Email already registered' });
+      }
+      user.email = email;
+    }
+    if (name) user.name = name;
+    await user.save();
+
+    if (user.role === 'lecturer') {
+      const lecturer = await Lecturer.findOne({ userId });
+      if (lecturer) {
+        if (lecturerId !== undefined) lecturer.lecturerId = lecturerId;
+        if (department !== undefined) lecturer.department = department;
+        if (specialization !== undefined) lecturer.specialization = specialization;
+        if (officeLocation !== undefined) lecturer.officeLocation = officeLocation;
+        if (officeHours !== undefined) lecturer.officeHours = officeHours;
+        lecturer.updatedAt = new Date();
+        await lecturer.save();
+      }
+    } else if (user.role === 'student') {
+      const student = await Student.findOne({ userId });
+      if (student) {
+        if (studentId !== undefined) student.studentId = studentId;
+        if (department !== undefined) student.department = department;
+        if (level !== undefined && ['100', '200', '300', '400'].includes(String(level))) {
+          student.level = String(level);
+        }
+        if (name) student.name = name;
+        if (email) student.email = email;
+        student.updatedAt = new Date();
+        await student.save();
+      }
+    }
+
+    admin.activityLog?.push({
+      action: 'UPDATE_USER',
+      details: `Updated ${user.role} user: ${user.email}`
+    });
+    await admin.save();
+
+    res.json({
+      status: 'success',
+      data: { user: { id: user._id, name: user.name, email: user.email, role: user.role } }
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ status: 'error', message: 'Failed to update user' });
   }
 }
 

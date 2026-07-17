@@ -163,6 +163,30 @@ export async function fetchAdminUsers() {
   return api.get('/admin/users');
 }
 
+export interface CreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  role: 'student' | 'lecturer' | 'admin';
+  additionalData?: Record<string, any>;
+}
+
+export async function createAdminUser(body: CreateUserInput) {
+  return api.post('/admin/users', body);
+}
+
+export async function updateAdminUser(userId: string, body: Record<string, any>) {
+  return api.put(`/admin/users/${userId}`, body);
+}
+
+export async function deleteAdminUser(userId: string) {
+  return api.delete(`/admin/users/${userId}`);
+}
+
+export async function toggleAdminUserStatus(userId: string, isActive: boolean) {
+  return api.put(`/admin/users/${userId}/status`, { isActive });
+}
+
 export async function fetchMlDatasetPredictions() {
   return api.get('/ml/dataset');
 }

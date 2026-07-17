@@ -7,6 +7,7 @@ import {
   getAllUsers,
   createUser,
   deleteUser,
+  updateUser,
   updateUserStatus,
   updateStudentOutreach,
   updateStudentLevel,
@@ -27,6 +28,10 @@ router.post('/users', [
   body('role').isIn(['student', 'lecturer', 'admin']).withMessage('Invalid role')
 ], validateRequest, createUser);
 router.delete('/users/:userId', deleteUser);
+router.put('/users/:userId', [
+  body('email').optional().isEmail().withMessage('Valid email required'),
+  body('name').optional().notEmpty().withMessage('Name cannot be empty')
+], validateRequest, updateUser);
 router.put('/users/:userId/status', [
   body('isActive').isBoolean().withMessage('isActive must be a boolean')
 ], validateRequest, updateUserStatus);

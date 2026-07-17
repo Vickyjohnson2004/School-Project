@@ -180,6 +180,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 dark:from-slate-950 dark:to-slate-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
+        <h1> victor johnson </h1>
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
           <p className="text-gray-600 mt-2 dark:text-slate-400">
@@ -187,6 +188,7 @@ export default function AdminDashboard() {
           </p>
         </div>
 
+      
         {/* Quick Statistics */}
         <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500 dark:bg-slate-900">

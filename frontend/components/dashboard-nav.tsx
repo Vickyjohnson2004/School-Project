@@ -35,6 +35,8 @@ const NAV_ITEMS: Record<string, NavItem[]> = {
   admin: [
     { label: 'Overview', href: '/dashboard/admin', icon: LayoutDashboard },
     { label: 'User Management', href: '/dashboard/admin#users', icon: Users },
+    { label: 'Lecturers', href: '/dashboard/admin/lecturers', icon: Users },
+    { label: 'Students', href: '/dashboard/admin/students', icon: GraduationCap },
     { label: 'ML Predictions', href: '/dashboard/ml', icon: Brain },
     { label: 'Reports', href: '/dashboard/admin#reports', icon: FileText }
   ]
