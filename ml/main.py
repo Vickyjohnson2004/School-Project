@@ -14,7 +14,10 @@ import os
 
 app = FastAPI(title='UniPort ML Service')
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'model.joblib')
+# On Vercel the deployment filesystem is read-only; only /tmp is writable (and
+# ephemeral). Fall back to the local directory for normal server hosting.
+_WRITABLE_DIR = '/tmp' if os.path.isdir('/tmp') and not os.access(os.path.dirname(__file__), os.W_OK) else os.path.dirname(__file__)
+MODEL_PATH = os.path.join(_WRITABLE_DIR, 'model.joblib')
 
 class StudentData(BaseModel):
     attendancePercentage: float
