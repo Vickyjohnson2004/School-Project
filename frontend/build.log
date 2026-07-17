@@ -1,0 +1,25 @@
+
+> student-risk-system-frontend@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+
+> Build error occurred
+Error: EINVAL: invalid argument, readlink 'C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\.next\server\vendor-chunks\@hookform.js'
+    at async Object.readlink (node:internal/fs/promises:974:10)
+    at async C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:58:30
+    at async Promise.all (index 0)
+    at async recursiveDelete (C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:51:5)
+    at async C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:68:17
+    at async Promise.all (index 12)
+    at async recursiveDelete (C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:51:5)
+    at async C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:68:17
+    at async Promise.all (index 6)
+    at async recursiveDelete (C:\Users\VICTOR JOHNSON\OneDrive\Desktop\project\student-risk-system\frontend\node_modules\next\dist\lib\recursive-delete.js:51:5) {
+  errno: -4071,
+  code: 'EINVAL',
+  syscall: 'readlink',
+  path: 'C:\\Users\\VICTOR JOHNSON\\OneDrive\\Desktop\\project\\student-risk-system\\frontend\\.next\\server\\vendor-chunks\\@hookform.js'
+}
