@@ -63,12 +63,20 @@ app.use('/api/ml', mlRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/reports', reportRoutes);
 
+app.get('/', (req, res) => res.json({
+  status: 'ok',
+  uptime: process.uptime(),
+  timestamp: new Date().toISOString(),
+  database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+}));
+
 app.get('/api/health', (req, res) => res.json({
   status: 'ok',
   uptime: process.uptime(),
   timestamp: new Date().toISOString(),
   database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
 }));
+
 
 app.use(errorHandler);
 
